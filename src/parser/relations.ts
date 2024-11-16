@@ -2,7 +2,7 @@
 import { Model, Relation } from '../core/types'
 import { ValidationError } from '../core/errors'
 
-export const validateRelations = (models: Model[]) => {
+export const validateRelations = (models: Model[]) : void => {
   const modelMap = new Map(models.map(m => [m.name, m]))
 
   models.forEach(model => {
@@ -48,7 +48,7 @@ const validateRelation = (
   relation: Relation,
   sourceModel: string,
   modelMap: Map<string, Model>
-) => {
+) : void => {
   // check target model exists
   if (!modelMap.has(relation.model)) {
     throw new ValidationError(
@@ -85,7 +85,7 @@ const validateRelation = (
   }
 }
 
-const parseRelationOptions = (relation: Partial<Relation>, options: string) => {
+const parseRelationOptions = (relation: Partial<Relation>, options: string) : void => {
   options.split('@').filter(Boolean).forEach(opt => {
     const [key, value] = opt.trim().split('=').map(s => s.trim())
     if (key === 'onDelete') relation.onDelete = value as any
@@ -93,7 +93,7 @@ const parseRelationOptions = (relation: Partial<Relation>, options: string) => {
   })
 }
 
-const checkCircularDependencies = (models: Model[]) => {
+const checkCircularDependencies = (models: Model[]): void => {
   const visited = new Set<string>()
   const recursionStack = new Set<string>()
 

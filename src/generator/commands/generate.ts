@@ -9,7 +9,7 @@ export interface GenerateOptions {
   schema: ParsedSchema
 }
 
-export const generateCommand = async (options: GenerateOptions) => {
+export const generateCommand = async (options: GenerateOptions): Promise<string> => {
   try {
     switch (options.type) {
       case 'prisma':

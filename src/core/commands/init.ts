@@ -10,7 +10,19 @@ export interface InitOptions {
   typescript?: boolean
 }
 
-export const initCommand = async (options: InitOptions) => {
+export interface InitResult {
+  schema: ParsedSchema
+  config: {
+    version: string
+    environment: 'development' | 'staging' | 'production'
+    database: {
+      type: DBFastConfig['database']['type']
+      database: string
+    }
+  }
+}
+
+export const initCommand = async (options: InitOptions): Promise<InitResult> => {
   try {
     const schema = parseSchema(options.description)
     return {

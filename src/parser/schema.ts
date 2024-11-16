@@ -1,11 +1,11 @@
 // src/parser/schema.ts
 import { 
     ParsedSchema, DataType, Field, Model, ValidationRuleSchema,
-    DataTypeSchema, FieldSchema, ModelSchema 
-   } from '../core/types'
+    DataTypeSchema } from '../core/types'
 import * as z from 'zod'
-   import { ParseError, ValidationError } from '../core/errors'
-   import { validateRelations, parseRelationLine } from './relations'
+import { logger } from '../utils/logger'
+import { ParseError, ValidationError } from '../core/errors'
+import { validateRelations, parseRelationLine } from './relations'
    
    // Main parser function
    export const parseSchema = (input: string): ParsedSchema => {
@@ -14,15 +14,15 @@ import * as z from 'zod'
         .replace(/\s+/g, ' ')
         .trim()
   
-      console.log('Input:', JSON.stringify(normalized))
+      logger.debug('Input:', JSON.stringify(normalized))
       const modelMatch = normalized.match(/(\w+)\s+has:\s*([\s\S]+)/)
       if (!modelMatch) {
         throw new ParseError('Invalid model syntax', { input })
       }
   
       const [_, name, body] = modelMatch
-      console.log('Model:', name)
-      console.log('Body:', JSON.stringify(body))
+      logger.debug('Model:', name)
+      logger.debug('Body:', JSON.stringify(body))
   
       // FIX: Split on actual dashes
       const fieldLines = body.split('-')
@@ -30,7 +30,7 @@ import * as z from 'zod'
         .filter(Boolean)  // Remove empty lines
         .map(line => `-${line}`)  // Add dash back
       
-      console.log('Field Lines:', fieldLines)
+      logger.debug('Field Lines:', fieldLines)
   
       const fields = fieldLines
         .filter(line => line.includes('('))  // Only parse lines with type definitions
@@ -40,8 +40,8 @@ import * as z from 'zod'
         .filter(line => line.includes('connects to'))
         .map(line => parseRelationLine(line))
   
-      console.log('Parsed Fields:', fields)
-      console.log('Parsed Relations:', relations)
+      logger.debug('Parsed Fields:', fields)
+      logger.debug('Parsed Relations:', relations)
   
       return {
         version: '1.0',
@@ -237,87 +237,86 @@ import * as z from 'zod'
    
    const parsePrecisionScale = (options: string): [number?, number?] => {
     const matches = options.match(/(\d+)(?:,(\d+))?/)
-    if (!matches) return []
-    return [
-      matches[1] ? parseInt(matches[1]) : undefined,
-      matches[2] ? parseInt(matches[2]) : undefined
-    ]
+    if (!matches) return [];
+    const first = matches[1] ? parseInt(matches[1]) : undefined;
+    const second = matches[2] ? parseInt(matches[2]) : undefined;
+    return [first, second] as [number?, number?];
    }
    
-   const validateFieldCompatibility = (field: Field) => {
-    // Validate default value type
-    if (field.default !== undefined) {
-      validateDefaultValue(field.type, field.default)
-    }
+//    const validateFieldCompatibility = (field: Field) => {
+//     // Validate default value type
+//     if (field.default !== undefined) {
+//       validateDefaultValue(field.type, field.default)
+//     }
    
-    // Validate enum values
-    if (field.type === 'enum' && !field.enumValues?.length) {
-      throw new ValidationError('Enum type requires enum values')
-    }
+//     // Validate enum values
+//     if (field.type === 'enum' && !field.enumValues?.length) {
+//       throw new ValidationError('Enum type requires enum values')
+//     }
    
-    // Validate numeric constraints
-    if (isNumericType(field.type)) {
-      validateNumericConstraints(field)
-    }
+//     // Validate numeric constraints
+//     if (isNumericType(field.type)) {
+//       validateNumericConstraints(field)
+//     }
    
-    // Validate string length
-    if (isStringType(field.type) && field.length !== undefined) {
-      if (field.length <= 0) {
-        throw new ValidationError('String length must be positive')
-      }
-    }
-   }
+//     // Validate string length
+//     if (isStringType(field.type) && field.length !== undefined) {
+//       if (field.length <= 0) {
+//         throw new ValidationError('String length must be positive')
+//       }
+//     }
+//    }
    
-   const validateSchemaIntegrity = (models: Model[]) => {
-    // Check duplicate models
-    const modelNames = new Set<string>()
-    models.forEach(model => {
-      if (modelNames.has(model.name)) {
-        throw new ValidationError(`Duplicate model name: ${model.name}`)
-      }
-      modelNames.add(model.name)
-    })
+//    const validateSchemaIntegrity = (models: Model[]) => {
+//     // Check duplicate models
+//     const modelNames = new Set<string>()
+//     models.forEach(model => {
+//       if (modelNames.has(model.name)) {
+//         throw new ValidationError(`Duplicate model name: ${model.name}`)
+//       }
+//       modelNames.add(model.name)
+//     })
    
-    // Validate relations
-    validateRelations(models)
-   }
+//     // Validate relations
+//     validateRelations(models)
+//    }
    
    // Type checking helpers
    const isNumericType = (type: string): boolean => {
     return ['int', 'float', 'decimal', 'bigint', 'smallint'].includes(type)
    }
    
-   const isStringType = (type: string): boolean => {
-    return ['string', 'text', 'varchar', 'char'].includes(type)
-   }
+//    const isStringType = (type: string): boolean => {
+//     return ['string', 'text', 'varchar', 'char'].includes(type)
+//    }
    
-   const validateDefaultValue = (type: DataType, value: any) => {
-    // Add type-specific validation
-    switch(type) {
-      case 'int':
-      case 'bigint':
-      case 'smallint':
-        if (!Number.isInteger(value)) {
-          throw new ValidationError(`Default value for ${type} must be integer`)
-        }
-        break
-      // Add more type validations
-    }
-   }
+//    const validateDefaultValue = (type: DataType, value: any) => {
+//     // Add type-specific validation
+//     switch(type) {
+//       case 'int':
+//       case 'bigint':
+//       case 'smallint':
+//         if (!Number.isInteger(value)) {
+//           throw new ValidationError(`Default value for ${type} must be integer`)
+//         }
+//         break
+//       // Add more type validations
+//     }
+//    }
    
-   const validateNumericConstraints = (field: Field) => {
-    if (field.precision !== undefined && field.precision <= 0) {
-      throw new ValidationError('Precision must be positive')
-    }
-    if (field.scale !== undefined) {
-      if (field.scale < 0) {
-        throw new ValidationError('Scale cannot be negative')
-      }
-      if (field.precision !== undefined && field.scale > field.precision) {
-        throw new ValidationError('Scale cannot be greater than precision')
-      }
-    }
-   }
+//    const validateNumericConstraints = (field: Field) => {
+//     if (field.precision !== undefined && field.precision <= 0) {
+//       throw new ValidationError('Precision must be positive')
+//     }
+//     if (field.scale !== undefined) {
+//       if (field.scale < 0) {
+//         throw new ValidationError('Scale cannot be negative')
+//       }
+//       if (field.precision !== undefined && field.scale > field.precision) {
+//         throw new ValidationError('Scale cannot be greater than precision')
+//       }
+//     }
+//    }
    
    export const parseDefaultValue = (value: string): any => {
     if (value === 'null') return null

@@ -1,15 +1,16 @@
 // src/parser/validation.ts
 import { 
     ParsedSchema, Model, Field, Relation,
-    DataTypeSchema, FieldSchema, RelationSchema, ModelSchema
-   } from '../core/types'
-   import { ValidationError } from '../core/errors'
-   import { DBFastConfig } from '../core/config'
-   
+    DataTypeSchema, FieldSchema, RelationSchema, ModelSchema } from '../core/types'
+import { ValidationError } from '../core/errors'
+import { DBFastConfig } from '../core/config'
+import { logger } from '../utils/logger'
+
+
    // Validate entire schema
    export const validateSchema = (schema: ParsedSchema): void => {
     try {
-      console.log('Validating schema:', JSON.stringify(schema, null, 2))
+      logger.debug('Validating schema:', JSON.stringify(schema, null, 2))
   
       // Check for duplicate model names FIRST
       const modelNames = new Set<string>()
@@ -27,7 +28,7 @@ import {
   
       // Validate each model
       schema.models.forEach(model => {
-        console.log('Validating model:', model.name)
+        logger.debug('Validating model:', model.name)
         
         // Validate fields
         if (!model.fields?.length) {
@@ -44,7 +45,7 @@ import {
   
       // Validate relations
       if (schema.models.some(m => m.relations?.length)) {
-        console.log('Validating relations')
+        logger.debug('Validating relations')
         validateRelationsIntegrity(schema.models)
       }
   

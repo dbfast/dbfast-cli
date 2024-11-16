@@ -9,7 +9,7 @@ export interface ValidateOptions {
 }
 
 // Validate schema structure and types
-const validateSchema = (schema: ParsedSchema) => {
+const validateSchema = (schema: ParsedSchema): void => {
  // Check model names are unique
  const modelNames = new Set<string>()
  for (const model of schema.models) {
@@ -37,7 +37,7 @@ const validateSchema = (schema: ParsedSchema) => {
 const validateDatabaseCompatibility = (
  schema: ParsedSchema,
  config: DBFastConfig
-) => {
+): void => {
  const dbType = config.database.type
 
  // Check type compatibility
@@ -67,7 +67,7 @@ const isTypeSupported = (
  return supportedTypes[dbType]?.includes(type) ?? false
 }
 
-export const validateCommand = async (options: ValidateOptions) => {
+export const validateCommand = async (options: ValidateOptions): Promise<boolean> => {
  try {
    validateSchema(options.schema)
    validateDatabaseCompatibility(options.schema, options.config)

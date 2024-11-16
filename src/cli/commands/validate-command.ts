@@ -1,6 +1,7 @@
 // src/cli/commands/validate-command.ts
 import { Command } from 'commander'
 import { validateCommand, ValidateOptions } from '../../parser/commands/validate'
+import { logger } from '../../utils/logger'
 
 export const createValidateCommand = (): Command => {
   const command = new Command('validate')
@@ -8,7 +9,7 @@ export const createValidateCommand = (): Command => {
     .action(async (options: ValidateOptions) => {
       try {
         await validateCommand(options)
-        console.log('✅ Validation successful!')
+        logger.debug('✅ Validation successful!')
       } catch (error) {
         if (error instanceof Error) {
           console.error('❌ Validation failed:', error.message)

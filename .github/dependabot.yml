@@ -1,12 +1,56 @@
 # .github/dependabot.yml
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 10
-    versioning-strategy: increase
-    labels:
-      - "dependencies"
-      - "automerge"
+ - package-ecosystem: "npm"
+   directory: "/"
+   schedule:
+     interval: "weekly"
+   
+   # Group related deps together
+   groups:
+     eslint:
+       patterns:
+         - "eslint*"
+         - "@typescript-eslint/*"
+     typescript:
+       patterns:
+         - "typescript"
+         - "@types/*"
+     test:
+       patterns:
+         - "jest*"
+         - "@types/jest"
+     prettier:
+       patterns:
+         - "prettier*"
+         - "eslint-config-prettier"
+
+   # Control versions
+   ignore:
+     # Avoid major version jumps that break compatibility
+     - dependency-name: "eslint"
+       update-types: ["version-update:semver-major"] 
+     - dependency-name: "typescript"
+       update-types: ["version-update:semver-major"]
+     
+   # PR settings
+   open-pull-requests-limit: 10
+   versioning-strategy: increase
+   labels:
+     - "dependencies"
+     - "automerge"
+   
+   # Auto merge rules
+   auto-merge:
+     - match:
+         dependency-type: "development"
+         update-type: "semver:minor"
+
+   # Review requirements
+   reviewers:
+     - "ultrainstinct0x"
+
+   # Branch name format
+   commit-message:
+     prefix: "chore"
+     include: "scope"

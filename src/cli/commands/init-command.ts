@@ -1,6 +1,8 @@
 // src/cli/commands/init-command.ts
 import { Command } from 'commander'
 import { initCommand, InitOptions } from '../../core/commands/init'
+import { logger } from '../../utils/logger'
+
 
 export const createInitCommand = (): Command => {
   const command = new Command('init')
@@ -11,7 +13,7 @@ export const createInitCommand = (): Command => {
     .action(async (options: InitOptions) => {
       try {
         await initCommand(options)
-        console.log('✨ Project initialized successfully!')
+        logger.debug('✨ Project initialized successfully!')
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred'
         console.error('❌ Init failed:', errorMessage)

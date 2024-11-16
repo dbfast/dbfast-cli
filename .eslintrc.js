@@ -18,6 +18,19 @@ module.exports = {
     rules: {
       '@typescript-eslint/explicit-function-return-type': 'error',
       '@typescript-eslint/no-explicit-any': 'warn',
-      'no-console': ['warn', { allow: ['warn', 'error'] }]
-    }
-  }
+      '@typescript-eslint/no-unused-vars': ['warn', { 
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_' 
+      }],
+      'no-console': ['error', { 
+        allow: ['warn', 'error'] 
+      }],
+    },
+    overrides: [{
+      // Only allow console in logger
+      files: ['**/utils/logger.ts'],
+      rules: {
+        'no-console': 'off'
+      }
+    }]
+   }

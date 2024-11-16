@@ -16,29 +16,29 @@ const DataTypeSchema = z.enum([
     'money', 'currency' // Financial types
   ])
   
-  export const ValidationRuleSchema = z.object({
-    type: z.enum(['min', 'max', 'pattern', 'custom']),
-    value: z.union([z.string(), z.number()]),
-    message: z.string().optional()
-  })
+export const ValidationRuleSchema = z.object({
+type: z.enum(['min', 'max', 'pattern', 'custom']),
+value: z.union([z.string(), z.number()]),
+message: z.string().optional()
+})
   
-  const FieldSchema = z.object({
-    name: z.string()
-      .regex(/^[a-zA-Z][a-zA-Z0-9_]*$/, {
-        message: 'field names must start with letter, use only letters/numbers/_'
-      }),
-    type: DataTypeSchema,
-    required: z.boolean().default(true),
-    unique: z.boolean().default(false),
-    length: z.number().optional(),
-    precision: z.number().optional(),
-    scale: z.number().optional(),
-    enumValues: z.array(z.string()).optional(),
-    validation: z.array(ValidationRuleSchema).optional(),
-    default: z.any().optional(),
-    documentation: z.string().optional(),
-    typeOptions: z.record(z.any()).optional() // For type-specific config
-  })
+const FieldSchema = z.object({
+name: z.string()
+    .regex(/^[a-zA-Z][a-zA-Z0-9_]*$/, {
+    message: 'field names must start with letter, use only letters/numbers/_'
+    }),
+type: DataTypeSchema,
+required: z.boolean().default(true),
+unique: z.boolean().default(false),
+length: z.number().optional(),
+precision: z.number().optional(),
+scale: z.number().optional(),
+enumValues: z.array(z.string()).optional(),
+validation: z.array(ValidationRuleSchema).optional(),
+default: z.any().optional(),
+documentation: z.string().optional(),
+typeOptions: z.record(z.any()).optional() // For type-specific config
+})
 // RELATIONS with better validation
 const RelationSchema = z.object({
  type: z.enum(['belongs_to', 'has_many', 'many_to_many']),
