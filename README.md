@@ -1,5 +1,13 @@
 # DBFast MVP
 
+[![npm version](https://badge.fury.io/js/dbfast-cli.svg)](https://badge.fury.io/js/dbfast-cli)
+[![CI](https://github.com/dbfast/dbfast-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/dbfast/dbfast-cli/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-97%25-blue)](https://github.com/dbfast/dbfast-cli)
+[![npm downloads](https://img.shields.io/npm/dm/dbfast-cli.svg)](https://www.npmjs.com/package/dbfast-cli)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://makeapullrequest.com)
+
+
 🚀 Natural language database interface for TypeScript developers. Write schemas and queries in plain English, get type-safe database operations.
 
 > ⚠️ **Early Development**: Core features only. Advanced features coming soon.
