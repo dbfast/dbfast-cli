@@ -1,0 +1,9 @@
+# .github/CODEOWNERS
+# These owners will be the default owners for everything
+* @ultrainstinct0x
+
+# Core engine code
+/src/core/ @ultrainstinct0x
+
+# Test files
+/src/**/__tests__/ @ultrainstinct0x
