@@ -6,38 +6,44 @@ on:
       - 'v*'
 
 permissions:
-  contents: write  # Grant write permission to contents, necessary for creating releases
-  packages: write  # Grant write permission to packages, necessary for publishing to npm
-  
+  contents: write
+  packages: write
+
 jobs:
   release:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        
+      
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
           cache: 'npm'
-          
+          registry-url: 'https://registry.npmjs.org' # ADD THIS
+      
       - name: Install dependencies
         run: npm ci
-          
+        
       - name: Build
         run: npm run build
-          
+      
       - name: Create Release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v1 # CHANGED THIS
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          files: |
+            dist/*
           body_path: CHANGELOG.md
           draft: false
           prerelease: false
-
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      # Configure npm auth BEFORE publish
+      - name: Setup npm auth
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+          
       - name: Publish to npm
         run: npm publish --access public
         env:
