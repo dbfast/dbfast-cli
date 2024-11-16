@@ -1,0 +1,26 @@
+# .codecov.yml
+coverage:
+  status:
+    project:
+      default:
+        target: 80%    # minimum coverage ratio
+        threshold: 2%   # allow coverage to drop by 2% before failing
+    patch:
+      default:
+        target: 80%
+
+# Configure coverage report display
+display:
+  precision: 2
+  round: down
+
+# Ignore patterns
+ignore:
+  - "tests/**/*"
+  - "**/*.test.ts"
+
+# Comment settings for pull requests
+comment:
+  layout: "reach, diff, flags, files"
+  behavior: default
+  require_changes: false
