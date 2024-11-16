@@ -85,4 +85,3 @@ PRs welcome! Check out our [contribution guidelines](CONTRIBUTING.md).
 ## Author
 
 [@0xultrainstinct](https://twitter.com/0xultrainstinct)
-```
