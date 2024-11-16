@@ -41,7 +41,6 @@ updates:
    
     # Automatic merging configuration
     rebase-strategy: "auto"
-    schedule-interval: "daily"
     target-branch: "main"
 
     # Review requirements
