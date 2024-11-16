@@ -1,29 +1,20 @@
+#!/usr/bin/env node
 import { Command } from 'commander'
-import { ParsedSchema } from '../core/types' 
-import { DBFastConfig } from '../core/config'
-import { initCommand } from '../core/commands/init'
-import { generateCommand } from '../generator/commands/generate'
-import { validateCommand } from '../parser/commands/validate'
+import { createInitCommand } from './commands/init-command'
 
 const program = new Command()
+  .name('dbfast')
+  .description('Fast database schema generator')
+  .version('0.1.0')
 
-program
-  .command('init')
-  .description('Initialize a new DBFast project')
-  .option('-d, --database <type>', 'database type')
-  .option('-t, --typescript', 'generate typescript')
-  .action(async (options) => {
-    const result = await initCommand(options)
-    // handle result
-  })
+program.addCommand(createInitCommand())
 
-program
-  .command('generate')
-  .description('Generate schema files')
-  .option('-t, --type <type>', 'type to generate')
-  .action(async (options) => {
-    const result = await generateCommand(options)
-    // handle result
-  })
+program.on('command:*', () => {
+  console.error('Invalid command: %s\nSee --help for a list of available commands.', program.args.join(' '))
+  process.exit(1)
+})
 
-export { program }
+program.parseAsync(process.argv).catch((err) => {
+  console.error('❌ Error:', err.message)
+  process.exit(1)
+})

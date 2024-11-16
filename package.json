@@ -1,9 +1,20 @@
 {
-  "name": "dbfast-mvp",
-  "version": "1.0.0",
+  "name": "dbfast-cli",
+  "version": "0.1.0",
   "description": "",
   "main": "index.js",
-"scripts": {
+  "bin": {
+    "dbfast": "./dist/cli/index.js"
+  },
+  "files": [ 
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
     "build": "tsc",
     "test": "jest --coverage",
     "test:watch": "jest --watch",
@@ -11,7 +22,8 @@
     "lint": "eslint . --ext .ts",
     "format": "prettier --write 'src/**/*.ts'",
     "prepare": "husky install",
-    "version": "auto-changelog -p && git add CHANGELOG.md"
+    "version": "auto-changelog -p && git add CHANGELOG.md",
+    "start": "node dist/cli/index.js"
   },
   "keywords": [],
   "author": "",
